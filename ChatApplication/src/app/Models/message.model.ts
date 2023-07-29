@@ -2,6 +2,9 @@ export interface Message {
   content: string;
   userId: string;
   id: string;
+  timestamp: any;
+  isActive: any;
+
 }
 
 export interface MessageSend {
@@ -9,18 +12,4 @@ export interface MessageSend {
   receiverID: string;
 }
 
-export interface RtMsgSend {
-  id: any;
-  content: string;
-  receiverID: any;
-}
 
-// export interface RealMsg {
-//   content: string;
-//   receiverID: string;
-//   id: string;
-//   timestamp: string;
-//   messageID: string;
-
-
-// }

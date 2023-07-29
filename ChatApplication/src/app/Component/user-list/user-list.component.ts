@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { LoginServiceService } from 'src/app/Services/login-service.service';
-import { Message, MessageSend, RtMsgSend } from 'src/app/Models/message.model';
+import { Message, MessageSend } from 'src/app/Models/message.model';
 // import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr';
 
@@ -26,7 +26,7 @@ export class UserListComponent implements OnInit {
   contextMenuX: string = '0';
   contextMenuY: string = '0';
   private connection!: HubConnection;
-  data: RtMsgSend[] = [];
+
 
 
 
@@ -44,6 +44,7 @@ export class UserListComponent implements OnInit {
       .withUrl('https://localhost:7277/chat')
       .build();
 
+
     this.connection.start()
       .then(() =>
         console.log('conn start'))
@@ -51,10 +52,21 @@ export class UserListComponent implements OnInit {
         console.log('error in conn')
       });
 
-    this.connection.on('Broadcast', (message: any) => {
-      this.data.push(message);
-      console.log(this.data);
+    this.connection.on('Broadcast', (message) => {
+
+      this.Msg.push(message);
+
+      console.log(message);
+
+      console.log(this.Msg);
+
+      // this.Msg.unshift(message);
+
+      // Scroll to the bottom of the conversation
+      this.scrollToBottom();
     })
+
+
 
   }
 
@@ -95,9 +107,9 @@ export class UserListComponent implements OnInit {
     // Make a POST request to send the message
     this.userService.sendMessage(newMsg).subscribe(
       (response: any) => {
-        // On successful response, prepend the sent message to the conversation
-        this.Msg.unshift(response);
 
+
+        // On successful response, prepend the sent message to the conversation
 
         // console.log(this.Msg);
 
@@ -105,8 +117,8 @@ export class UserListComponent implements OnInit {
         // Clear the message input after sending
         this.newMessage = '';
 
-        // Scroll to the bottom of the conversation
-        this.scrollToBottom();
+
+
       },
       (error: any) => {
         // Handle error, display relevant error message to the user
@@ -207,7 +219,7 @@ export class UserListComponent implements OnInit {
     this.deletingMessageId = null;
   }
 
-  private scrollToBottom(): void {
+  private scrollToBottom(Msg: Message[] = []): void {
     setTimeout(() => {
       const messageContainer = document.querySelector('.message-container');
       if (messageContainer) {
@@ -216,4 +228,3 @@ export class UserListComponent implements OnInit {
     });
   }
 }
-

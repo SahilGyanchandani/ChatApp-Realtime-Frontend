@@ -79,7 +79,7 @@
     <div class="send-message-container">
       <div class="input-group">
         <textarea
-          [value]="newMessage"
+          [(ngModel)]="newMessage"
           (input)="onMessageInput($event)"
           (keydown.enter)="sendMessage()"
           class="message-input"

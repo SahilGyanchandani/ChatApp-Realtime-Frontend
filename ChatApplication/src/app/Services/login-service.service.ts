@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Message, MessageSend } from '../Models/message.model';
+import { HubConnection } from '@aspnet/signalr';
 
 
 @Injectable({
@@ -9,21 +10,22 @@ import { Message, MessageSend } from '../Models/message.model';
 })
 
 export class LoginServiceService {
-  constructor(private http: HttpClient) {}
 
-  onSubmit(obj: any):Observable<any> {
-    return this.http.post<any>('https://localhost:7277/api/UserLogin',obj);
+  constructor(private http: HttpClient) { }
+
+  onSubmit(obj: any): Observable<any> {
+    return this.http.post<any>('https://localhost:7277/api/UserLogin', obj);
   }
 
-  onReg(userData : any):Observable<any>{
-     return this.http.post<any>('https://localhost:7277/api/UserReg',userData);
+  onReg(userData: any): Observable<any> {
+    return this.http.post<any>('https://localhost:7277/api/UserReg', userData);
   }
 
-  onUserList():Observable<any>{
+  onUserList(): Observable<any> {
     return this.http.get<any>('https://localhost:7277/api/UserReg/GetUser');
   }
 
-  onMsgHistory(userid:any):Observable<any>{
+  onMsgHistory(userid: any): Observable<any> {
     return this.http.get<any>(`https://localhost:7277/api/Message?userId=${userid}`);
   }
 
@@ -37,9 +39,9 @@ export class LoginServiceService {
     return this.http.put<Message>(url, body);
   }
 
-  deleteMessage(id:string):Observable<any>{
+  deleteMessage(id: string): Observable<any> {
     return this.http.delete<any>(`https://localhost:7277/api/Message/${id}`);
   }
- 
+
 }
 
