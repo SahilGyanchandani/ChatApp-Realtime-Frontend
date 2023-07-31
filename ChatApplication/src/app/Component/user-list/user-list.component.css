@@ -1,3 +1,20 @@
+.search-container {
+  display: flex;
+  align-items: center; /* Vertically center the elements */
+  max-width: 70%;
+  margin: 0 auto;
+
+}
+
+.form-control {
+  flex: 1; /* Take up remaining space in the container */
+  margin-right: 10px; /* Add some spacing between input and button */
+}
+
+.btn btn-danger {
+  flex-shrink: 0; /* Prevent button from shrinking */
+}
+
 img{
   height: 25px;
   width: 25px;  

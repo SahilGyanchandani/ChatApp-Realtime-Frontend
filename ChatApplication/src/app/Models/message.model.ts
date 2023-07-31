@@ -1,10 +1,9 @@
 export interface Message {
   content: string;
   userId: string;
+  receiverID: string;
   id: string;
   timestamp: any;
-  isActive: any;
-
 }
 
 export interface MessageSend {

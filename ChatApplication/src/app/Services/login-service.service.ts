@@ -13,6 +13,10 @@ export class LoginServiceService {
 
   constructor(private http: HttpClient) { }
 
+  searchConversation(query: string): Observable<any> {
+    return this.http.get<any>(`https://localhost:7277/api/Message/search?query=${query}`);
+  }
+
   onSubmit(obj: any): Observable<any> {
     return this.http.post<any>('https://localhost:7277/api/UserLogin', obj);
   }

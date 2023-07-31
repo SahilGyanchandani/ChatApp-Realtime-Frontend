@@ -1,5 +1,21 @@
+<div class="search-container">
+  <input
+    type="text"
+    [(ngModel)]="searchQuery"
+    (input)="onSearchInputChange()"
+    placeholder="Search conversation..."
+    class="form-control"
+  />
+  <button
+    *ngIf="searchResults.length > 0"
+    (click)="clearSearch()"
+    class="btn btn-danger"
+  >
+    Clear
+  </button>
+</div>
 <div class="container">
-  <div class="user-list" style="width: 25%">
+  <div class="user-list" style="width: 25%" *ngIf="!searchQuery">
     <ul>
       <li
         *ngFor="let user of Users"
@@ -17,17 +33,18 @@
   </div>
 
   <div class="conversation-history" style="width: 75%">
-    <div class="message-header" *ngIf="selectedUserId">
+    <div class="message-header" *ngIf="selectedUserId && !searchQuery">
       <div class="header-content">
         {{ getUserById(selectedUserId)?.userName }}
       </div>
     </div>
     <div class="message-container">
+      <!-- Display the search results if there is a search query, otherwise display the normal conversation -->
       <div
-        *ngFor="let message of Msg"
+        *ngFor="let message of searchQuery ? searchResults : Msg"
         [ngClass]="{
           'message-left': message.userId === selectedUserId,
-          'message-right': message.userId !== selectedUserId
+          'message-right': message.receiverID === selectedUserId
         }"
       >
         <div

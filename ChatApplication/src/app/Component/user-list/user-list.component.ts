@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { LoginServiceService } from 'src/app/Services/login-service.service';
 import { Message, MessageSend } from 'src/app/Models/message.model';
-// import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
-import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr';
+import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
+
 
 @Component({
   selector: 'app-user-list',
@@ -12,6 +12,8 @@ import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr';
 
 
 export class UserListComponent implements OnInit {
+  searchQuery: string = ''; // Holds the search query entered by the user
+  searchResults: Message[] = []; // Holds the list of messages that match the search query
   Users: any;
   Msg: Message[] = []; // Initialize Msg as an empty array
   sendMsg: MessageSend[] = [];
@@ -26,9 +28,6 @@ export class UserListComponent implements OnInit {
   contextMenuX: string = '0';
   contextMenuY: string = '0';
   private connection!: HubConnection;
-
-
-
 
   constructor(private userService: LoginServiceService) {
     this.userService.onUserList().subscribe((data) => {
@@ -54,20 +53,50 @@ export class UserListComponent implements OnInit {
 
     this.connection.on('Broadcast', (message) => {
 
-      this.Msg.push(message);
+      // this.Msg.push(message);
+      this.Msg.unshift(message);
 
       console.log(message);
 
       console.log(this.Msg);
 
-      // this.Msg.unshift(message);
-
       // Scroll to the bottom of the conversation
       this.scrollToBottom();
     })
+  }
 
 
+  onSearchInputChange(): void {
+    if (this.searchQuery.trim() === '') {
+      // If the search query is empty, clear the search results and show the normal conversation
+      this.searchResults = [];
+    } else {
+      // If there's a search query, make an API call to get the search results
+      this.userService.searchConversation(this.searchQuery).subscribe(
+        (response: any) => {
+          if (response && response.messages && Array.isArray(response.messages)) {
+            // If the response contains a 'messages' property that is an array
 
+            this.searchResults = response.messages;
+
+          } else {
+            // Handle unexpected response format
+            console.error('Unexpected response format:', response);
+            alert('Failed to search conversation due to unexpected response format.');
+          }
+        },
+        (error: any) => {
+          // Handle error, display relevant error message to the user
+          console.error('Error searching conversation:', error);
+          alert('Failed to search conversation. Please try again.');
+        }
+      );
+    }
+  }
+  // Method to clear the search query and results
+  clearSearch(): void {
+    this.searchQuery = '';
+    this.searchResults = [];
   }
 
   getUserConversation(user: any): void {
@@ -107,12 +136,9 @@ export class UserListComponent implements OnInit {
     // Make a POST request to send the message
     this.userService.sendMessage(newMsg).subscribe(
       (response: any) => {
-
-
         // On successful response, prepend the sent message to the conversation
-
+        this.Msg.push(response);
         // console.log(this.Msg);
-
 
         // Clear the message input after sending
         this.newMessage = '';
