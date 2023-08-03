@@ -9,8 +9,8 @@
 .form-control {
   flex: 1; /* Take up remaining space in the container */
   margin-right: 10px; /* Add some spacing between input and button */
+  border-color: #10e93f;
 }
-
 .btn btn-danger {
   flex-shrink: 0; /* Prevent button from shrinking */
 }
@@ -108,9 +108,9 @@ ul{
 
   .message-container {
     display: flex;
-    flex-direction: column-reverse; /* Messages will start from the bottom */
+    flex-direction: column;
     overflow-y: auto; /* Enable vertical scrolling */
-    height: 82%;
+    height: 79%;
   }
 
   .message-header {

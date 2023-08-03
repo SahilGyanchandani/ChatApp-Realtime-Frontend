@@ -39,7 +39,7 @@
       </div>
     </div>
     <div class="message-container">
-      <!-- Display the search results if there is a search query, otherwise display the normal conversation -->
+      <!-- Display the search results if there is a search query, otherwise display the normal conversation  -->
       <div
         *ngFor="let message of searchQuery ? searchResults : Msg"
         [ngClass]="{
@@ -97,7 +97,6 @@
       <div class="input-group">
         <textarea
           [(ngModel)]="newMessage"
-          (input)="onMessageInput($event)"
           (keydown.enter)="sendMessage()"
           class="message-input"
           placeholder="Type your message..."

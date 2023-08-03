@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { LoginServiceService } from 'src/app/Services/login-service.service';
 import { Message, MessageSend } from 'src/app/Models/message.model';
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -29,7 +30,7 @@ export class UserListComponent implements OnInit {
   contextMenuY: string = '0';
   private connection!: HubConnection;
 
-  constructor(private userService: LoginServiceService) {
+  constructor(private userService: LoginServiceService, private router: Router) {
     this.userService.onUserList().subscribe((data) => {
       this.Users = data;
       console.log(this.Users);
@@ -53,15 +54,15 @@ export class UserListComponent implements OnInit {
 
     this.connection.on('Broadcast', (message) => {
 
-      // this.Msg.push(message);
-      this.Msg.unshift(message);
+
+      this.Msg.push(message);
 
       console.log(message);
 
       console.log(this.Msg);
-
-      // Scroll to the bottom of the conversation
+      // Scroll to the bottom when user send or receive the mesaage
       this.scrollToBottom();
+
     })
   }
 
@@ -76,7 +77,6 @@ export class UserListComponent implements OnInit {
         (response: any) => {
           if (response && response.messages && Array.isArray(response.messages)) {
             // If the response contains a 'messages' property that is an array
-
             this.searchResults = response.messages;
 
           } else {
@@ -99,29 +99,28 @@ export class UserListComponent implements OnInit {
     this.searchResults = [];
   }
 
+
+
   getUserConversation(user: any): void {
     this.userService.onMsgHistory(user.id).subscribe((data: any) => {
       console.log('Data from API:', data);
-      if (data && data.messages && Array.isArray(data.messages)) {
-        this.Msg = data.messages; // Assign the array of messages to Msg
-        this.selectedUserId = user.id; // Set the selectedUserId to the receiver's userId
-        console.log('Msg array:', this.Msg);
 
-        // Reverse the Msg array to show the latest messages at the bottom
-        this.Msg = this.Msg.reverse();
-      } else {
-        this.Msg = []; // If the data is not in the expected format, initialize as an empty array
-        this.selectedUserId = null; // Reset selectedUserId
-      }
+      this.Msg = data; // Assign the array of messages to Msg
+      this.selectedUserId = user.id; // Set the selectedUserId to the receiver's userId
+      console.log('Msg array:', this.Msg);
+
+      // Scroll to the bottom of the conversation
+      this.scrollToBottom();
+
     });
   }
+
 
   getUserById(userId: string): any {
     return this.Users.find((user: any) => user.id === userId);
   }
 
   sendMessage(): void {
-
     if (this.newMessage.trim() === '' || !this.selectedUserId) {
       // Do not send an empty message or if there's no selected user
       return;
@@ -136,15 +135,10 @@ export class UserListComponent implements OnInit {
     // Make a POST request to send the message
     this.userService.sendMessage(newMsg).subscribe(
       (response: any) => {
-        // On successful response, prepend the sent message to the conversation
-        this.Msg.push(response);
-        // console.log(this.Msg);
-
-        // Clear the message input after sending
         this.newMessage = '';
 
-
-
+        // Scroll to the bottom of the conversation after the new message is added
+        this.scrollToBottom();
       },
       (error: any) => {
         // Handle error, display relevant error message to the user
@@ -153,6 +147,7 @@ export class UserListComponent implements OnInit {
       }
     );
   }
+
 
   onMessageInput(event: Event): void {
     const target = event.target as HTMLTextAreaElement;

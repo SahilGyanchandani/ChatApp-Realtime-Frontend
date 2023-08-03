@@ -83,12 +83,17 @@
             <button class="btn btn-primary">Login</button>
           </div>
         </form>
-        <button (click)="loginWithGoogle()" class="btn btn-primary">
-          Login with Google
-        </button>
-      </div>
-      <div class="card-footer text-right">
-        <small><a routerLink="../registration">Don't have a Account</a></small>
+        <asl-google-signin-button
+          theme="filled_blue"
+          type="standard"
+          shape="pill"
+          size="medium"
+        ></asl-google-signin-button>
+        <div class="card-footer text-right">
+          <small
+            ><a routerLink="../registration">Don't have a Account</a></small
+          >
+        </div>
       </div>
     </div>
   </div>

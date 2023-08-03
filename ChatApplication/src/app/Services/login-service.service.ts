@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Message, MessageSend } from '../Models/message.model';
 import { HubConnection } from '@aspnet/signalr';
+import { ApiLog } from '../Models/Apilog.model';
 
 
 @Injectable({
@@ -18,15 +19,15 @@ export class LoginServiceService {
   }
 
   onSubmit(obj: any): Observable<any> {
-    return this.http.post<any>('https://localhost:7277/api/UserLogin', obj);
+    return this.http.post<any>('https://localhost:7277/api/UserLogin/Login', obj);
   }
 
   onReg(userData: any): Observable<any> {
-    return this.http.post<any>('https://localhost:7277/api/UserReg', userData);
+    return this.http.post<any>('https://localhost:7277/api/UserReg/Register', userData);
   }
 
   onUserList(): Observable<any> {
-    return this.http.get<any>('https://localhost:7277/api/UserReg/GetUser');
+    return this.http.get<any>('https://localhost:7277/api/UserReg/Users');
   }
 
   onMsgHistory(userid: any): Observable<any> {
@@ -46,6 +47,12 @@ export class LoginServiceService {
   deleteMessage(id: string): Observable<any> {
     return this.http.delete<any>(`https://localhost:7277/api/Message/${id}`);
   }
+
+  // Fetches API logs from the server
+  getApiLogs(): Observable<ApiLog[]> {
+    return this.http.get<ApiLog[]>(`https://localhost:7277/api/ApiLogs`);
+  }
+
 
 }
 

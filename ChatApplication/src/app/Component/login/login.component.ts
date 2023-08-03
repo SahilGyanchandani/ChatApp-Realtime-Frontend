@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { faLock } from '@fortawesome/free-solid-svg-icons';
 import { LoginServiceService } from 'src/app/Services/login-service.service';
 import { UserListComponent } from '../user-list/user-list.component';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { GoogleLoginProvider, SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -16,10 +17,12 @@ export class LoginComponent {
   regisform!: FormGroup
   submitted = false;
   errorMessage: string | null = null;
+  loggedIn: any;
+  user?: SocialUser;
 
 
   constructor(private logService: LoginServiceService, private route: Router, private formBuilder: FormBuilder,
-    private http: HttpClient) { }
+    private http: HttpClient, private authService: SocialAuthService) { }
 
   ngOnInit() {
     this.regisform = this.formBuilder.group({
@@ -29,7 +32,13 @@ export class LoginComponent {
 
       //validations
     })
+
+    this.authService.authState.subscribe((user: SocialUser) => {
+      this.user = user;
+      console.log(user);
+    })
   }
+
 
   onSubmit() {
     this.submitted = true
@@ -53,19 +62,6 @@ export class LoginComponent {
         } else {
           this.errorMessage = 'An error occurred: ' + error.message;
         }
-      }
-    );
-  }
-
-  loginWithGoogle(): void {
-    // Redirect to the external login endpoint for Google
-    this.http.get<any>(`https://localhost:7277/api/UserLogin/ExternalLogin?provider=Google`).subscribe(
-      (response) => {
-        // Redirect to the Google login page
-        window.location.href = response.url;
-      },
-      (error) => {
-        console.error('Error during Google login:', error);
       }
     );
   }
