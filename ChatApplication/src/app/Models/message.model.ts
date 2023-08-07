@@ -1,4 +1,5 @@
 export interface Message {
+  messageID: string;
   content: string;
   userId: string;
   receiverID: string;

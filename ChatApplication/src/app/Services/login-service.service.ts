@@ -12,6 +12,7 @@ import { ApiLog } from '../Models/Apilog.model';
 
 export class LoginServiceService {
 
+
   constructor(private http: HttpClient) { }
 
   searchConversation(query: string): Observable<any> {

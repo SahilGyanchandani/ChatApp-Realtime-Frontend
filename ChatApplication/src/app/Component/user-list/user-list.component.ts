@@ -53,11 +53,9 @@ export class UserListComponent implements OnInit {
       });
 
     this.connection.on('Broadcast', (message) => {
-
-
+      message.id = message.messageID;
       this.Msg.push(message);
-
-      console.log(message);
+      console.log(message.id);
 
       console.log(this.Msg);
       // Scroll to the bottom when user send or receive the mesaage
@@ -136,6 +134,7 @@ export class UserListComponent implements OnInit {
     this.userService.sendMessage(newMsg).subscribe(
       (response: any) => {
         this.newMessage = '';
+        // this.Msg.push(response);
 
         // Scroll to the bottom of the conversation after the new message is added
         this.scrollToBottom();
@@ -202,6 +201,7 @@ export class UserListComponent implements OnInit {
     // Set the deletingMessageId to the current message id
     this.deletingMessageId = message.id;
   }
+
 
   // Method to handle delete action
   onMessageDelete(message: Message): void {

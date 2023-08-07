@@ -6,6 +6,8 @@ import { LoginServiceService } from 'src/app/Services/login-service.service';
 import { UserListComponent } from '../user-list/user-list.component';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { GoogleLoginProvider, SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
+import { GoogleService } from 'src/app/Services/google.service';
+import { ExternalAuthDto } from 'src/app/Models/GoogleLogin.model';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -19,10 +21,14 @@ export class LoginComponent {
   errorMessage: string | null = null;
   loggedIn: any;
   user?: SocialUser;
+  showError: boolean | undefined;
+  body: ExternalAuthDto[] = [];
+  isLogging: boolean | undefined;
+
 
 
   constructor(private logService: LoginServiceService, private route: Router, private formBuilder: FormBuilder,
-    private http: HttpClient, private authService: SocialAuthService) { }
+    private http: HttpClient, private authService: SocialAuthService, private googleService: GoogleService) { }
 
   ngOnInit() {
     this.regisform = this.formBuilder.group({
@@ -35,8 +41,11 @@ export class LoginComponent {
 
     this.authService.authState.subscribe((user: SocialUser) => {
       this.user = user;
-      console.log(user);
+      console.log(this.user);
+
     })
+
+    this.externalLogin();
   }
 
 
@@ -47,7 +56,7 @@ export class LoginComponent {
       throw new Error("Please Enter Valid Values");
     }
     this.logService.onSubmit(this.regisform.value).subscribe(res => {
-      console.log('res', res)
+      console.log('res', res);
       localStorage.setItem('token', res.token);
       this.route.navigateByUrl('/userlist');
     },
@@ -65,5 +74,32 @@ export class LoginComponent {
       }
     );
   }
+
+  externalLogin = () => {
+    this.showError = false;
+    this.googleService.signInWithGoogle();
+    this.googleService.extAuthChanged.subscribe(user => {
+      const externalAuth: ExternalAuthDto = {
+        idToken: user.idToken
+      }
+      this.validateExternalAuth(externalAuth);
+    })
+  }
+
+
+  private validateExternalAuth(externalAuth: ExternalAuthDto) {
+    this.googleService.externalLogin(externalAuth).subscribe({
+      next: (res) => {
+        localStorage.setItem("token", res.token);
+        // console.log('res', res.token);
+        this.route.navigateByUrl('/userlist');
+      },
+      error: (err: HttpErrorResponse) => {
+        this.errorMessage = err.message;
+        this.showError = true;
+      }
+    });
+  }
+
 
 }

@@ -55,7 +55,8 @@ import { MatOptionModule } from '@angular/material/core';
   ],
   providers: [
     {
-      provide: HTTP_INTERCEPTORS, useClass: CustomInterceptor,
+      provide: HTTP_INTERCEPTORS,
+      useClass: CustomInterceptor,
       multi: true
     },
     {
