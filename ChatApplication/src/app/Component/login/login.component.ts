@@ -1,11 +1,10 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
-import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
+import { Component } from '@angular/core';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { faLock } from '@fortawesome/free-solid-svg-icons';
 import { LoginServiceService } from 'src/app/Services/login-service.service';
-import { UserListComponent } from '../user-list/user-list.component';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { GoogleLoginProvider, SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
+import { HttpErrorResponse } from '@angular/common/http';
+import { SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
 import { GoogleService } from 'src/app/Services/google.service';
 import { ExternalAuthDto } from 'src/app/Models/GoogleLogin.model';
 @Component({
@@ -28,7 +27,7 @@ export class LoginComponent {
 
 
   constructor(private logService: LoginServiceService, private route: Router, private formBuilder: FormBuilder,
-    private http: HttpClient, private authService: SocialAuthService, private googleService: GoogleService) { }
+    private authService: SocialAuthService, private googleService: GoogleService) { }
 
   ngOnInit() {
     this.regisform = this.formBuilder.group({

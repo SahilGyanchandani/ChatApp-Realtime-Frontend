@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { SocialUser, SocialAuthService } from '@abacritt/angularx-social-login';
-import { GoogleLoginProvider } from '@abacritt/angularx-social-login';
+import { SocialUser, SocialAuthService, GoogleLoginProvider } from '@abacritt/angularx-social-login';
 import { Observable, Subject } from 'rxjs';
 import { ExternalAuthDto } from '../Models/GoogleLogin.model';
 import { HttpClient } from '@angular/common/http';

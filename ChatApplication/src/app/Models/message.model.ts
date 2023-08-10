@@ -12,6 +12,10 @@ export interface MessageSend {
   receiverID: string;
 }
 
-
-
-
+// export interface MessageDto {
+//   MessageID: string;
+//   Id: string; //SenderID Of User
+//   ReceiverID: string; //ReceiverID of User
+//   Content: string;
+//   Timestamp: string;
+// }

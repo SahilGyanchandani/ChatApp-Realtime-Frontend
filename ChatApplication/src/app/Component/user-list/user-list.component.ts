@@ -40,8 +40,10 @@ export class UserListComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    const localToken = localStorage.getItem('token');
     this.connection = new HubConnectionBuilder()
-      .withUrl('https://localhost:7277/chat')
+
+      .withUrl(`https://localhost:7277/chat?access_token=${localToken}`)
       .build();
 
 
@@ -54,9 +56,9 @@ export class UserListComponent implements OnInit {
 
     this.connection.on('Broadcast', (message) => {
       message.id = message.messageID;
+      console.log(message.messageID);
       this.Msg.push(message);
       console.log(message.id);
-
       console.log(this.Msg);
       // Scroll to the bottom when user send or receive the mesaage
       this.scrollToBottom();
@@ -127,18 +129,26 @@ export class UserListComponent implements OnInit {
     // Construct the message object to be sent to the backend
     const newMsg: MessageSend = {
       content: this.newMessage.trim(),
-      receiverID: this.selectedUserId // Use selectedUserId as the recipient's receiverID
+      receiverID: this.selectedUserId,
+      // Use selectedUserId as the recipient's receiverID
     };
 
     // Make a POST request to send the message
     this.userService.sendMessage(newMsg).subscribe(
-      (response: any) => {
+      (response: Message) => {
         this.newMessage = '';
-        // this.Msg.push(response);
+        this.connection.invoke('SendMsg', newMsg)
+          .then(() => {
+            console.log('Message sent successfully');
+          })
+        this.Msg.push(response);
+        console.log(newMsg);
+
 
         // Scroll to the bottom of the conversation after the new message is added
         this.scrollToBottom();
       },
+
       (error: any) => {
         // Handle error, display relevant error message to the user
         console.error('Error sending message:', error);
