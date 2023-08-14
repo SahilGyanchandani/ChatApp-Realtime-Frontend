@@ -30,6 +30,7 @@ export class UserListComponent implements OnInit {
   contextMenuY: string = '0';
   private connection!: HubConnection;
 
+
   constructor(private userService: LoginServiceService, private router: Router) {
     this.userService.onUserList().subscribe((data) => {
       this.Users = data;
@@ -38,7 +39,6 @@ export class UserListComponent implements OnInit {
     });
 
   }
-
   ngOnInit(): void {
     const localToken = localStorage.getItem('token');
     this.connection = new HubConnectionBuilder()
@@ -56,9 +56,9 @@ export class UserListComponent implements OnInit {
 
     this.connection.on('Broadcast', (message) => {
       message.id = message.messageID;
-      console.log(message.messageID);
+      // console.log(message.messageID);
       this.Msg.push(message);
-      console.log(message.id);
+      // console.log(message.id);
       console.log(this.Msg);
       // Scroll to the bottom when user send or receive the mesaage
       this.scrollToBottom();
@@ -99,8 +99,6 @@ export class UserListComponent implements OnInit {
     this.searchResults = [];
   }
 
-
-
   getUserConversation(user: any): void {
     this.userService.onMsgHistory(user.id).subscribe((data: any) => {
       console.log('Data from API:', data);
@@ -137,13 +135,15 @@ export class UserListComponent implements OnInit {
     this.userService.sendMessage(newMsg).subscribe(
       (response: Message) => {
         this.newMessage = '';
-        this.connection.invoke('SendMsg', newMsg)
-          .then(() => {
-            console.log('Message sent successfully');
-          })
-        this.Msg.push(response);
-        console.log(newMsg);
+        // this.connection.invoke('SendMsg', newMsg)
 
+        //   .then(() => {
+        //     console.log('Message sent successfully');
+        //   })
+        this.Msg.push(response);
+        console.log(response);
+
+        // console.log(newMsg);
 
         // Scroll to the bottom of the conversation after the new message is added
         this.scrollToBottom();
