@@ -34,6 +34,10 @@ export class LoginServiceService {
   onMsgHistory(userid: any): Observable<any> {
     return this.http.get<any>(`https://localhost:7277/api/Message?userId=${userid}`);
   }
+  loadOlderMessages(receiverId: string, beforeTimestamp: Date): Observable<any[]> {
+    // Make an HTTP GET request to your API to load older messages
+    return this.http.get<any[]>(`https://localhost:7277/api/Message?userId=${receiverId}&before=${beforeTimestamp}&count=20&sort=asc`);
+  }
 
   sendMessage(message: MessageSend): Observable<any> {
     return this.http.post<any>(`https://localhost:7277/api/Message`, message);
