@@ -122,7 +122,7 @@ export class UserListComponent implements OnInit {
     const scrollPositionBefore = container.scrollHeight - container.clientHeight;
 
     // Check if the user has scrolled to the top of the container
-    if (container.scrollTop === 0 && !this.isLoading) { // Check isLoading flag
+    if (container.scrollTop === 0 && !this.isLoading && this.Msg.length > 19) { // Check isLoading flag
       // Show the loading indicator
       this.isLoading = true;
 
